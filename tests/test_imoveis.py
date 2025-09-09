@@ -1,14 +1,54 @@
 import pytest
+from unittest.mock import patch, MagicMock
+from servidor import connect_db
 
 def test_index(client):
     response = client.get("/")
     assert response.status_code == 200
 
-
-def test_imoveis(client):
+@patch('servidor.connect_db')
+def test_get_imoveis(mock_connect_db,client):
+    
+    
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    
+    
+    mock_conn.cursor.return_value = mock_cursor
+    
+    mock_cursor.fetchall.return_value = [
+        (1, "Rua A", "Rua", "Bairro A", "Cidade A", "12345-678", "Apartamento", 300000.00, "2023-01-01"),
+        (2, "Avenida B", "Avenida", "Bairro B", "Cidade B", "23456-789", "Casa", 500000.00, "2022-06-15")
+    ]
+    mock_connect_db.return_value = mock_conn
     response = client.get("/imoveis")
+    
+    expected_data = [
+        {
+            "id": 1,
+            "logradouro": "Rua A",
+            "tipo_logradouro": "Rua",
+            "bairro": "Bairro A",
+            "cidade": "Cidade A",
+            "cep": "12345-678",
+            "tipo": "Apartamento",
+            "valor": 300000.00,
+            "data_aquisicao": "2023-01-01"
+        },
+        {
+            "id": 2,
+            "logradouro": "Avenida B",
+            "tipo_logradouro": "Avenida",
+            "bairro": "Bairro B",
+            "cidade": "Cidade B",
+            "cep": "23456-789",
+            "tipo": "Casa",
+            "valor": 500000.00,
+            "data_aquisicao": "2022-06-15"
+        }
+    ]
     assert response.status_code == 200
-    assert isinstance(response.json, list)
+    assert response.get_json() == expected_data
     
     
 def test_imovel_detail(client):
