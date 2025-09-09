@@ -6,6 +6,26 @@ def test_index(client):
     response = client.get("/")
     assert response.status_code == 200
 
+
+def test_conexao_db_mock():
+    fake_conn = MagicMock()
+    fake_conn.is_connected.return_value = True
+    with patch("servidor.mysql.connector.connect", return_value=fake_conn):
+        conn = connect_db()
+        assert conn.is_connected()
+
+def test_conexao_db():
+    conn = None 
+    try:
+        conn = connect_db()
+        assert conn.is_connected()
+    finally:
+        if conn:
+            conn.close()
+        
+    
+
+
 @patch('servidor.connect_db')
 def test_get_imoveis(mock_connect_db,client):
     
@@ -64,19 +84,29 @@ def test_imovel_lista_vazia(mock_connect_db,client):
     assert response.status_code == 404
     assert response.get_json() == {"erro": "Nenhum Imóvel encontrado"}
     
+@patch('servidor.connect_db')
+def test_imovel_detail(mock_connect_db,client):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor 
     
-def test_imovel_detail(client):
+    mock_cursor.fetchone.return_value = [(1, "Rua A", "Rua", "Bairro A", "Cidade A", "12345-678", "Apartamento", 300000.00, "2023-01-01")]
+    mock_connect_db.return_value = mock_conn
     response = client.get("/imoveis/1")
+    expected_data = [
+        {
+            "id": 1,
+            "logradouro": "Rua A",
+            "tipo_logradouro": "Rua",
+            "bairro": "Bairro A",
+            "cidade": "Cidade A",
+            "cep": "12345-678",
+            "tipo": "Apartamento",
+            "valor": 300000.00,
+            "data_aquisicao": "2023-01-01"
+        },]
     assert response.status_code == 200
-    assert response.json["id"] == 1
-    assert "logradouro" in response.json
-    assert "tipo_logradouro" in response.json
-    assert "bairro" in response.json
-    assert "cidade" in response.json
-    assert "cep" in response.json
-    assert "tipo" in response.json
-    assert "valor" in response.json
-    assert "data_aquisicao" in response.json
+    assert reponse.get_json() == expected_data
     
     
 def test_criar_imoveis(client):

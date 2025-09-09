@@ -17,16 +17,7 @@ config = {
     'ssl_ca': os.getenv('SSL_CA_PATH')  # Caminho para o certificado SSL
 }
 def connect_db():
-    """Estabelece a conexão com o banco de dados usando as configurações fornecidas."""
-    try:
-        # Tenta estabelecer a conexão com o banco de dados usando mysql-connector-python
-        conn = mysql.connector.connect(**config)
-        if conn.is_connected():
-            return conn
-    except Error as err:
-        # Em caso de erro, imprime a mensagem de erro
-        print(f"Erro: {err}")
-        return None
+    return None 
 
 
 @app.route('/imoveis', methods=['GET'])
