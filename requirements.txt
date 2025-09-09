@@ -2,3 +2,4 @@ Flask
 python-dotenv
 pytest
 pytest-flask
+mysql-connector-python 
