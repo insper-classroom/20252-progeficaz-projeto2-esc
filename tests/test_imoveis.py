@@ -49,6 +49,20 @@ def test_get_imoveis(mock_connect_db,client):
     ]
     assert response.status_code == 200
     assert response.get_json() == expected_data
+@patch('servidor.connect_db')
+def test_imovel_lista_vazia(mock_connect_db,client):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+
+    mock_cursor.fetchall.return_value = []
+
+    mock_connect_db.return_value = mock_conn
+
+    response = client.get("/imoveis")
+
+    assert response.status_code == 404
+    assert response.get_json() == {"erro": "Nenhum Imóvel encontrado"}
     
     
 def test_imovel_detail(client):

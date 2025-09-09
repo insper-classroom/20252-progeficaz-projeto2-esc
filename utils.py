@@ -13,7 +13,7 @@ def get_data():
     cursor.execute(sql)
     results = cursor.fetchall()
     if not results:
-        resp = {"erro": "Nenhum aluno encontrado"}
+        resp = {"erro": "Nenhum Imóvel encontrado"}
         return resp, 404
     else:
         imoveis = []
