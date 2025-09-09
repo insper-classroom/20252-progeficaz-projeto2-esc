@@ -90,9 +90,9 @@ def test_imovel_detail(mock_connect_db,client):
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor 
     
-    mock_cursor.fetchone.return_value = [(1, "Rua A", "Rua", "Bairro A", "Cidade A", "12345-678", "Apartamento", 300000.00, "2023-01-01")]
+    mock_cursor.fetchone.return_value = [{"id":1, "logradouro":"Rua A","tipo_logradouro": "Rua", "bairro":"Bairro A", "cidade":"Cidade A", "cep":"12345-678", "tipo":"Apartamento", "valor":300000.00, "data_aquisicao":"2023-01-01"}]
     mock_connect_db.return_value = mock_conn
-    response = client.get("/imoveis/1")
+    response = client.get(f"/imoveis/{1}")
     expected_data = [
         {
             "id": 1,
@@ -104,9 +104,9 @@ def test_imovel_detail(mock_connect_db,client):
             "tipo": "Apartamento",
             "valor": 300000.00,
             "data_aquisicao": "2023-01-01"
-        },]
+        }]
     assert response.status_code == 200
-    assert reponse.get_json() == expected_data
+    assert response.get_json() == expected_data
     
     
 def test_criar_imoveis(client):
