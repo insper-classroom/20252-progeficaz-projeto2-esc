@@ -3,7 +3,7 @@ import os
 import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
-from utils import get_data
+from utils import get_data, get_imovel
 app = Flask(__name__)
 load_dotenv('.cred')
 
@@ -36,35 +36,8 @@ def imoveis():
 
 @app.route('/imoveis/<int:id>', methods=['GET'])
 def imovel_detail(id):
-    conn = connect_db()
-    if conn is None:
-        return {"erro": "Erro ao conectar ao banco de dados"}, 500
-    
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM imoveis WHERE id= ?", (id,))
-    result = cursor.fetchone()
-    # print(result[0]["id"])
-    # print(result[0]["logradouro"])
-    # print(result[0]["tipo_logradouro"])
-    # print(result[0]["bairro"])
-    # print(result[0]["tipo"])
-    # print()
-    if not result:
-        return {"erro": "Imóvel não encontrado"}, 404
-    else:
-        imovel_dict = [{
-            
-            "id": result[0]["id"],
-            "logradouro": result[0]["logradouro"],
-            "tipo_logradouro": result[0]["tipo_logradouro"],
-            "bairro": result[0]["bairro"],
-            "cidade": result[0]["cidade"],
-            "cep": result[0]["cep"],
-            "tipo": result[0]["tipo"],
-            "valor": float(result[0]["valor"]),
-            "data_aquisicao": result[0]["data_aquisicao"]
-        }]
-        return imovel_dict, 200
+    resp, status = get_imovel(id)
+    return resp, status
 
 
 if __name__ == "__main__":
