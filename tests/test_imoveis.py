@@ -131,3 +131,25 @@ def test_criar_imoveis(mock_connect_db,client):
     assert response.get_json() == {"mensagem": "Imóvel criado com sucesso"}
     
     
+@patch('servidor.connect_db')
+def test_erro_na_criacao_de_imoveis(mock_connect_db,client):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+    mock_connect_db.return_value = mock_conn
+    mock_cursor.execute.side_effect = Exception("Erro ao inserir no banco de dados")
+    response = client.post("/imoveis", json={
+        "logradouro": "Rua Teste",
+        "tipo_logradouro": "Rua",
+        "bairro": "Bairro Teste",
+        "cidade": "Cidade Teste",
+        "cep": "12345-678",
+        "tipo": "Apartamento",
+        "valor": 400000.00,
+        "data_aquisicao": "2023-10-01"
+    })
+    assert response.status_code == 500
+    assert response.get_json() == {"erro": "Erro ao inserir no banco de dados"}
+    
+    
+    
