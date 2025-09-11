@@ -3,7 +3,7 @@ import os
 import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
-from utils import get_data, get_imovel
+from utils import get_data, get_imovel,novo_imovel
 app = Flask(__name__)
 load_dotenv('.cred')
 
@@ -37,6 +37,12 @@ def imoveis():
 @app.route('/imoveis/<int:id>', methods=['GET'])
 def imovel_detail(id):
     resp, status = get_imovel(id)
+    return resp, status
+
+@app.route('/imoveis', methods=['POST'])
+def criar_imoveis():
+    data = request.get_json()
+    resp, status = novo_imovel(data)
     return resp, status
 
 

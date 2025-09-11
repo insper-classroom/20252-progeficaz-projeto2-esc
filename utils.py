@@ -1,6 +1,33 @@
 from datetime import datetime
 
-
+def novo_imovel(data):
+    from servidor import connect_db
+    conn = connect_db()
+    if conn is None:
+        return {"erro": "Erro ao conectar ao banco de dados"}, 500
+    cursor = conn.cursor()
+    try:
+        sql = """INSERT INTO imoveis (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao)
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+        values = (
+            data.get("logradouro"),
+            data.get("tipo_logradouro"),
+            data.get("bairro"),
+            data.get("cidade"),
+            data.get("cep"),
+            data.get("tipo"),
+            data.get("valor"),
+            datetime.strptime(data.get("data_aquisicao"), '%Y-%m-%d').date() if data.get("data_aquisicao") else None
+        )
+        cursor.execute(sql, values)
+        conn.commit()
+        return {"mensagem": "Imóvel criado com sucesso"}, 201
+    except Exception as e:
+        print(f"Erro ao inserir no banco de dados: {e}")
+        return {"erro": "Erro ao inserir no banco de dados"}, 500
+    finally:
+        cursor.close()
+        conn.close()
 def get_imovel(id):
     from servidor import connect_db
     conn = connect_db()
