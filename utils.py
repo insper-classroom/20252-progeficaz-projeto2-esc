@@ -5,7 +5,21 @@ def novo_imovel(data):
     conn = connect_db()
     if conn is None:
         return {"erro": "Erro ao conectar ao banco de dados"}, 500
+    
+    
+    required_fields = ("logradouro", "tipo_logradouro", "bairro", "cidade", "cep", "tipo", "valor", "data_aquisicao")
+    if not data or not isinstance(data, dict) or not all(field in data for field in required_fields):
+        return {"erro": "Dados inválidos ou incompletos"}, 400
+    
+    if not isinstance(data["valor"], (int, float)) or data["valor"] <= 0:
+        return {"erro": "Dados inválidos ou incompletos"}, 400
+    try:
+        data_aquisicao = datetime.strptime(data["data_aquisicao"], "%Y-%m-%d").date()
+    except Exception:
+        return {"erro": "Dados inválidos ou incompletos"}, 400
+    
     cursor = conn.cursor()
+    
     try:
         sql = """INSERT INTO imoveis (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao)
                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
@@ -22,12 +36,12 @@ def novo_imovel(data):
         cursor.execute(sql, values)
         conn.commit()
         return {"mensagem": "Imóvel criado com sucesso"}, 201
-    except Exception as e:
-        print(f"Erro ao inserir no banco de dados: {e}")
-        return {"erro": "Erro ao inserir no banco de dados"}, 500
     finally:
         cursor.close()
         conn.close()
+        
+        
+        
 def get_imovel(id):
     from servidor import connect_db
     conn = connect_db()
