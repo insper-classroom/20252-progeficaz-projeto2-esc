@@ -3,7 +3,7 @@
 API RESTful desenvolvida em Python (Flask) para gerenciamento de imóveis, com suporte a operações CRUD (criação, leitura, atualização e exclusão) e conexão a banco de dados MySQL.
 
 ## Deploy na AWS
-A API está em produção e pode ser acessada em: [http://54.233.39.212:8000](http://54.233.39.212:8000)
+A API está em produção e pode ser acessada em: [http://54.233.39.212:8000/imoveis](http://54.233.39.212:8000/imoveis)
 
 ## Tecnologias Utilizadas
 - Python 3.9  
