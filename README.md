@@ -22,35 +22,23 @@ POST /imoveis
 PUT /imoveis/<id>  
 DELETE /imoveis/<id>  
 
-### Exemplo de criação de imóvel (POST /imoveis)
-```json
-{
-  "logradouro": "Rua Nova",
-  "tipo_logradouro": "Rua",
-  "bairro": "Centro",
-  "cidade": "São Paulo",
-  "cep": "01010-010",
-  "tipo": "Apartamento",
-  "valor": 450000.00,
-  "data_aquisicao": "2024-01-20"
-}
-🧪 Testes Automatizados
+### Testes Automatizados
 Os testes foram implementados usando Pytest e podem ser executados com:
 pytest -v
 
-Como rodar localmente
+### Como rodar localmente
 Clonar o repositório
 git clone https://github.com/insper-classroom/20252-progeficaz-projeto2-esc.git
 cd 20252-progeficaz-projeto2-esc
 
-Criar ambiente virtual
+### Criar ambiente virtual
 python3 -m venv venv
 source venv/bin/activate
 
-Instalar dependências
+### Instalar dependências
 pip install -r requirements.txt
 
-Criar arquivo .cred na raiz do projeto
+### Criar arquivo .cred na raiz do projeto
 DB_HOST=...
 DB_USER=...
 DB_PASSWORD=...
@@ -58,6 +46,6 @@ DB_NAME=imoveisdb
 DB_PORT=3306
 SSL_CA_PATH=/opt/imoveis-api/ca.pem
 
-Rodar localmente
+### Rodar localmente
 python servidor.py
 
