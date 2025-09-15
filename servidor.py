@@ -3,7 +3,7 @@ import os
 import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
-from utils import get_data, get_imovel,novo_imovel,delete_imovel
+from utils import get_data, get_imovel,novo_imovel,delete_imovel,editar_imovel,get_imovel_por_tipo,get_imovel_por_cidade
 app = Flask(__name__)
 load_dotenv('.cred')
 
@@ -49,6 +49,24 @@ def criar_imoveis():
 def remover_imovel(id):
     resp, status = delete_imovel(id)
     return resp, status
+
+@app.route('/imoveis/<int:id>', methods=['PUT'])
+def atualizar_imovel(id):
+    data = request.get_json()
+    resp, status = editar_imovel(id, data)
+    return resp, status
+
+@app.route('/imoveis/tipo/<string:tipo>', methods=['GET'])
+def imoveis_por_tipo(tipo):
+    resp, status = get_imovel_por_tipo(tipo)
+    return resp, status
+
+@app.route('/imoveis/cidade/<string:cidade>', methods=['GET'])
+def imoveis_por_cidade(cidade):
+    resp, status = get_imovel_por_cidade(cidade)
+    return resp, status
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
