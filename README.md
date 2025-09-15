@@ -13,7 +13,7 @@ A API está em produção e pode ser acessada em: [http://54.233.39.212:8000](ht
 - Gunicorn (servidor WSGI)  
 - Amazon EC2 (deploy na nuvem)  
 
-## 📌 Endpoints da API
+## Endpoints da API
 GET /imoveis  
 GET /imoveis/<id>  
 GET /imoveis/tipo/<tipo>  
