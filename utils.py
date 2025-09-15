@@ -48,7 +48,7 @@ def get_imovel(id):
     if conn is None:
         return {"erro": "Erro ao conectar ao banco de dados"}, 500
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM imoveis WHERE id= ?", (id,))
+    cursor.execute("SELECT * FROM imoveis WHERE id= %s", (id,))
     result = cursor.fetchone()
     if not result:
         return {"erro": "Imóvel não encontrado"}, 404
@@ -97,3 +97,18 @@ def get_data():
             imoveis.append(imoveis_dict)
         resp = imoveis
         return resp, 200
+    
+def delete_imovel(id):
+    from servidor import connect_db
+    conn = connect_db()
+    if conn is None:
+        return {"erro": "Erro ao conectar ao banco de dados"}, 500
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM imoveis WHERE id= %s", (id,))
+    result = cursor.fetchone()
+    if not result:
+        return {"erro": "Imóvel não encontrado"}, 404
+    else:
+        cursor.execute("DELETE FROM imoveis WHERE id = %s", (id,))
+        conn.commit()
+        return {"mensagem": "Imóvel deletado com sucesso"}, 200

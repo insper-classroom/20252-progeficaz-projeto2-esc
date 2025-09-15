@@ -3,7 +3,7 @@ import os
 import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
-from utils import get_data, get_imovel,novo_imovel
+from utils import get_data, get_imovel,novo_imovel,delete_imovel
 app = Flask(__name__)
 load_dotenv('.cred')
 
@@ -45,6 +45,10 @@ def criar_imoveis():
     resp, status = novo_imovel(data)
     return resp, status
 
+@app.route('/imoveis/<int:id>', methods=['DELETE'])
+def remover_imovel(id):
+    resp, status = delete_imovel(id)
+    return resp, status
 
 if __name__ == "__main__":
     app.run(debug=True)

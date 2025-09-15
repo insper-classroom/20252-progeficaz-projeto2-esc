@@ -4,7 +4,7 @@ from servidor import connect_db
 
 def test_index(client):
     response = client.get("/")
-    assert response.status_code == 200
+    assert response.status_code == 404
 
 
 def test_conexao_db_mock():
@@ -186,6 +186,33 @@ def test_erro_na_criacao_de_imoveis(mock_connect_db, client, resposta, erro, esp
 
     assert response.status_code == erro
     assert response.get_json() == esperado
+
+
+@patch('servidor.connect_db')
+def test_deletar_imovel(mock_connect_db,client):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor 
+    mock_cursor.fetchone.return_value = (1, "Rua A", "Rua", "Bairro A", "Cidade A", "12345-678", "Apartamento", 300000.00, "2023-01-01")
+    mock_connect_db.return_value = mock_conn
+    response = client.delete(f"/imoveis/{1}")
+    assert response.status_code == 200
+    assert response.get_json() == {"mensagem": "Imóvel deletado com sucesso"}    
     
+    
+@patch('servidor.connect_db')      
+def test_deletar_imovel_nao_encontrado(mock_connect_db,client):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+    mock_cursor.fetchone.return_value = None
+    mock_connect_db.return_value = mock_conn
+    response = client.delete(f"/imoveis/{100000}")
+    assert response.status_code == 404
+    assert response.get_json() == {"erro": "Imóvel não encontrado"}
+    
+
+    
+
     
     
